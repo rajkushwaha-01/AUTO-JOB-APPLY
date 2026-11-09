@@ -5,6 +5,7 @@ node_modules/
 .env
 .env.*
 !.env.example
+mongo.env
 
 # Logs
 npm-debug.log*
@@ -16,6 +17,9 @@ pnpm-debug.log*
 dist/
 build/
 coverage/
+
+postman
+.postman
 
 # OS files
 .DS_Store
