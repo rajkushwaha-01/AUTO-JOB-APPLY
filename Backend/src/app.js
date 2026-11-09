@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 const authRoutes = require("./routes/authRoutes");
 const fileRoutes = require("./routes/fileRoutes");
 
+
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
