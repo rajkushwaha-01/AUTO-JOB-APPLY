@@ -5,6 +5,7 @@ STRICT RULES:
 - Return ONLY valid JSON. No markdown, no code fences, no explanation, no preamble.
 - Do not invent, guess, or hallucinate any information not present in the text.
 - If a field is missing or unclear, use an empty string "" or empty array [], never make up a value.
+- Extract LinkedIn and GitHub URLs only when the actual URL appears in the resume text; never infer a URL from a label or profile name.
 - Normalize skill names (e.g. "ReactJS" and "React.js" both become "React").
 - Extract ALL technical skills mentioned anywhere in the text — including inside project descriptions and bullet points, not just a "Skills" section if one exists.
 

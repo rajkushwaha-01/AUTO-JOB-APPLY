@@ -33,16 +33,21 @@ const extractResumeData = async (resumeText) => {
             .join('')
         : '';
 
-        console.log(rawText);
-
   if (!rawText.trim()) {
     throw new Error('Gemini returned an empty response.');
   }
+  let parsedData;
   try {
-    return JSON.parse(rawText);
+    parsedData = JSON.parse(rawText);
   } catch (error) {
     throw new Error('Gemini returned invalid JSON.', { cause: error });
   }
+
+  if (!parsedData || typeof parsedData !== 'object' || Array.isArray(parsedData)) {
+    throw new Error('Gemini returned JSON in an unexpected format.');
+  }
+
+  return parsedData;
 };
 
 module.exports = { extractResumeData };
