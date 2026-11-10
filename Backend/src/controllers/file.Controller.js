@@ -1,13 +1,38 @@
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const { extractResumeData } = require('../services/ai.service');
 const User = require('../modules/user.model');
 
-const uploadDir = path.join(__dirname, '../../uploads');
-fs.mkdirSync(uploadDir, { recursive: true });
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-const upload = multer({ dest: uploadDir });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_FILE_SIZE },
+});
+
+const getBucket = () => {
+  if (mongoose.connection.readyState !== 1 || !mongoose.connection.db) {
+    const error = new Error('Database is not connected');
+    error.status = 503;
+    throw error;
+  }
+
+  return new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: 'uploads',
+  });
+};
+
+const storePdf = (bucket, file, userId) =>
+  new Promise((resolve, reject) => {
+    const uploadStream = bucket.openUploadStream(file.originalname, {
+      contentType: file.mimetype,
+      metadata: { userId: String(userId) },
+    });
+    uploadStream.once('error', reject);
+    uploadStream.once('finish', () => resolve(uploadStream.id));
+    uploadStream.end(file.buffer);
+  });
 
 const getProfileType = (linkUrl) => {
   try {
@@ -79,13 +104,15 @@ const extractPdfText = async (dataBuffer) => {
 };
 
 const uploadPdf = async (req, res, next) => {
+  let bucket;
+  let newFileId;
+
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const dataBuffer = fs.readFileSync(req.file.path);
-    const { text, links } = await extractPdfText(dataBuffer);
+    const { text, links } = await extractPdfText(req.file.buffer);
     const resumeData = await extractResumeData(text);
 
     // Enrich resumeData with LinkedIn / GitHub URLs extracted from PDF annotations
@@ -97,16 +124,24 @@ const uploadPdf = async (req, res, next) => {
       }
     }
 
-    // ── Persist resume data on the authenticated user ──────────────────────────
+    bucket = getBucket();
+    const currentUser = await User.findById(req.userId).select('resume.pdfFileId');
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    newFileId = await storePdf(bucket, req.file, req.userId);
+
     const updatedUser = await User.findByIdAndUpdate(
       req.userId,
       {
         $set: {
           resume: {
             ...resumeData,
-            pdfLinks:   links,
-            rawText:    text,
-            uploadedAt: new Date()
+            pdfLinks: links,
+            rawText: text,
+            uploadedAt: new Date(),
+            pdfFileId: newFileId,
           }
         }
       },
@@ -114,7 +149,18 @@ const uploadPdf = async (req, res, next) => {
     );
 
     if (!updatedUser) {
+      await bucket.delete(newFileId);
+      newFileId = null;
       return res.status(404).json({ error: 'User not found' });
+    }
+
+    const previousFileId = currentUser.resume?.pdfFileId;
+    if (previousFileId && String(previousFileId) !== String(newFileId)) {
+      try {
+        await bucket.delete(previousFileId);
+      } catch (error) {
+        console.error('Error deleting previous resume from MongoDB:', error);
+      }
     }
 
     res.status(200).json({
@@ -125,16 +171,40 @@ const uploadPdf = async (req, res, next) => {
       resume: updatedUser.resume
     });
   } catch (error) {
-    next(error);
-  } finally {
-    if (req.file && req.file.path) {
-      fs.unlink(req.file.path, (unlinkErr) => {
-        if (unlinkErr) {
-          console.error('Error deleting uploaded PDF:', unlinkErr);
-        }
-      });
+    if (bucket && newFileId) {
+      try {
+        await bucket.delete(newFileId);
+      } catch (cleanupError) {
+        console.error('Error deleting incomplete resume upload from MongoDB:', cleanupError);
+      }
     }
+    next(error);
   }
 };
 
-module.exports = { upload, uploadPdf };
+const downloadPdf = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId).select('resume.pdfFileId');
+    if (!user?.resume?.pdfFileId) {
+      return res.status(404).json({ error: 'No resume PDF found' });
+    }
+
+    const bucket = getBucket();
+    const file = await bucket.find({ _id: user.resume.pdfFileId }).next();
+    if (!file) {
+      return res.status(404).json({ error: 'Resume PDF not found in storage' });
+    }
+
+    res.set({
+      'Content-Type': file.contentType || 'application/pdf',
+      'Content-Disposition': 'attachment; filename="resume.pdf"',
+    });
+    const downloadStream = bucket.openDownloadStream(file._id);
+    downloadStream.once('error', next);
+    downloadStream.pipe(res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { upload, uploadPdf, downloadPdf };
