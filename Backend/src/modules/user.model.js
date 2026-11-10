@@ -144,6 +144,9 @@ const resumeSchema = new mongoose.Schema(
     rawText: { type: String }, // full extracted text
     uploadedAt: { type: Date, default: Date.now },
     pdfFileId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    // in resumeSchema, add:
+    embedding: { type: [Number], default: [] },
+    embeddingHash: { type: String }, // to avoid re-embedding the same resume content
   },
   { _id: false },
 );
