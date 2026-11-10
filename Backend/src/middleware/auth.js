@@ -1,13 +1,20 @@
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
+  // 1. Try cookie first (browser clients)
+  // 2. Fall back to Authorization header (mobile / API clients)
+  const tokenFromCookie = req.cookies?.token;
   const authHeader = req.headers.authorization;
+  const tokenFromHeader =
+    authHeader && authHeader.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : null;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  const token = tokenFromCookie || tokenFromHeader;
+
+  if (!token) {
     return res.status(401).json({ message: "No token provided" });
   }
-
-  const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

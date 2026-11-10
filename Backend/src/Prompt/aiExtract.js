@@ -14,40 +14,128 @@ OUTPUT JSON SCHEMA (return exactly this shape):
   "fullName": "",
   "email": "",
   "phone": "",
+  "location": "",
+  "portfolio": "",
   "linkedin": "",
   "github": "",
+  "twitter": "",
+
+  "summary": "",
+  "objective": "",
+
   "skills": [],
+  "skillsByCategory": {
+    "Frontend": [],
+    "Backend": [],
+    "Database": [],
+    "DevOps": [],
+    "Tools": [],
+    "Languages": [],
+    "Other": []
+  },
+
   "experience": [
     {
       "title": "",
       "company": "",
+      "location": "",
       "startDate": "",
       "endDate": "",
-      "bullets": []
+      "isCurrent": false,
+      "bullets": [],
+      "description": ""
     }
   ],
+  "totalYearsExperience": 0,
+
   "education": [
     {
       "degree": "",
       "institution": "",
-      "year": ""
+      "location": "",
+      "startYear": "",
+      "endYear": "",
+      "year": "",
+      "grade": ""
     }
   ],
+
   "projects": [
     {
       "name": "",
       "description": "",
-      "techUsed": []
+      "techUsed": [],
+      "liveUrl": "",
+      "repoUrl": ""
     }
   ],
-  "totalYearsExperience": 0,
-  "summary": ""
+
+  "certifications": [
+    {
+      "name": "",
+      "issuer": "",
+      "date": "",
+      "credentialUrl": "",
+      "credentialId": ""
+    }
+  ],
+
+  "hackathons": [],
+
+  "languages": [
+    {
+      "language": "",
+      "proficiency": ""
+    }
+  ],
+
+  "awards": [
+    {
+      "title": "",
+      "issuer": "",
+      "date": "",
+      "description": ""
+    }
+  ],
+
+  "volunteer": [
+    {
+      "role": "",
+      "organization": "",
+      "duration": "",
+      "description": ""
+    }
+  ],
+
+  "publications": [
+    {
+      "title": "",
+      "publisher": "",
+      "date": "",
+      "url": ""
+    }
+  ],
+
+  "interests": []
 }
 
 Field guidance:
-- "summary": a 1-2 sentence objective/professional summary written from the resume content, used later for job-matching embeddings. If the resume has no summary section, generate one from the experience/skills — but base it only on what's actually in the text.
-- "totalYearsExperience": estimate from the earliest experience startDate to the latest endDate (or "Present"), as a number.
-- "techUsed" in projects: only technologies explicitly mentioned for that project.
+- "summary": copy the professional summary/profile from the resume exactly as written. If absent, generate one (1-2 sentences) strictly from the content present — no hallucination.
+- "objective": copy any separate career objective section. Leave "" if none.
+- "location": city/state/country of the candidate (not institutions).
+- "portfolio": personal website or portfolio URL — distinct from LinkedIn/GitHub.
+- "totalYearsExperience": estimate in years from earliest startDate to latest endDate (or "Present"). Use 0 for students with no experience.
+- "skillsByCategory": group the same skills from "skills" into the most appropriate category. Only populate categories that actually have items; leave others as [].
+- "experience.isCurrent": true if endDate is "Present" or "Current".
+- "experience.bullets": array of individual responsibility/achievement bullet points as separate strings.
+- "education.grade": GPA, percentage, CGPA, division — whatever grading format appears in the text.
+- "education.startYear" / "endYear": separate years when a range is given (e.g. "2025 - 2029"). Also populate "year" with the full string for backwards compatibility.
+- "projects.liveUrl": live/deployed link (Vercel, Netlify, etc.). "repoUrl": GitHub repo link.
+- "certifications.credentialUrl": URL to verify the certificate online.
+- "hackathons": short descriptions or names of hackathons participated in, as strings.
+- "languages": spoken/written human languages (not programming languages).
+- "interests": hobbies, personal interests listed in the resume.
+- For any array field with no data found, return []. For any string field with no data found, return "".
 
 RESUME TEXT:
 """

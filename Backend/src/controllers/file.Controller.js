@@ -2,6 +2,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const { extractResumeData } = require('../services/ai.service');
+const User = require('../modules/user.model');
 
 const uploadDir = path.join(__dirname, '../../uploads');
 fs.mkdirSync(uploadDir, { recursive: true });
@@ -86,18 +87,43 @@ const uploadPdf = async (req, res, next) => {
     const dataBuffer = fs.readFileSync(req.file.path);
     const { text, links } = await extractPdfText(dataBuffer);
     const resumeData = await extractResumeData(text);
-    for (const link of links) {
-      if (!link.url) {
-        continue;
-      }
 
+    // Enrich resumeData with LinkedIn / GitHub URLs extracted from PDF annotations
+    for (const link of links) {
+      if (!link.url) continue;
       const profileType = getProfileType(link.url);
       if (profileType) {
         resumeData[profileType] = link.url;
       }
     }
 
-    res.status(200).json({ text, resumeData, pdfLinks: links });
+    // ── Persist resume data on the authenticated user ──────────────────────────
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      {
+        $set: {
+          resume: {
+            ...resumeData,
+            pdfLinks:   links,
+            rawText:    text,
+            uploadedAt: new Date()
+          }
+        }
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({
+      message: 'Resume uploaded and saved successfully',
+      text,
+      resumeData,
+      pdfLinks: links,
+      resume: updatedUser.resume
+    });
   } catch (error) {
     next(error);
   } finally {
