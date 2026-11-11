@@ -15,6 +15,7 @@ import {
   AlertCircle,
   Menu,
   X,
+  Sliders,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -77,10 +78,10 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-white border-b border-yc-border h-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+      <header className="sticky top-0 z-40 w-full bg-white border-b border-yc-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           {/* Logo & Navigation */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6 lg:gap-8">
             <Link to={user ? '/dashboard' : '/'} className="flex items-center gap-2 group">
               <div className="w-5 h-5 bg-yc-orange rounded-[4px] flex items-center justify-center text-white text-xs font-bold leading-none select-none">
                 A
@@ -116,15 +117,9 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Right Action Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {user ? (
               <>
-                {/* Background Sync Pill */}
-                <div className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-[4px] bg-yc-bg-secondary border border-yc-border text-[11px] text-yc-text-secondary select-none">
-                  <span className="w-1.5 h-1.5 rounded-full bg-yc-success animate-pulse" />
-                  <span>Greenhouse sync active</span>
-                </div>
-
                 {/* Upload Resume CTA */}
                 <Button
                   size="sm"
@@ -140,7 +135,7 @@ export const Navbar: React.FC = () => {
                 <div className="relative">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] hover:bg-yc-bg-secondary border border-transparent hover:border-yc-border transition-colors text-left"
+                    className="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 rounded-[4px] hover:bg-yc-bg-secondary border border-transparent hover:border-yc-border transition-colors text-left"
                   >
                     <div className="w-6 h-6 rounded-full bg-yc-text text-white flex items-center justify-center text-[11px] font-medium">
                       {user.name.charAt(0).toUpperCase()}
@@ -179,8 +174,8 @@ export const Navbar: React.FC = () => {
                           onClick={() => setIsDropdownOpen(false)}
                           className="flex items-center gap-2 px-3 py-2 text-xs text-yc-text hover:bg-yc-bg-secondary transition-colors"
                         >
-                          <Sparkles className="w-3.5 h-3.5 text-yc-text-muted" />
-                          Matching Preferences
+                          <Sliders className="w-3.5 h-3.5 text-yc-text-muted" />
+                          Automation Settings
                         </Link>
                         <div className="border-t border-yc-border-subtle my-1" />
                         <button
@@ -202,7 +197,8 @@ export const Navbar: React.FC = () => {
                 {/* Mobile Menu Hamburger */}
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="md:hidden p-1.5 rounded-[4px] text-yc-text hover:bg-yc-bg-secondary"
+                  className="md:hidden p-1.5 rounded-[4px] text-yc-text hover:bg-yc-bg-secondary transition-colors"
+                  aria-label="Toggle navigation menu"
                 >
                   {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5 text-yc-text" />}
                 </button>
@@ -226,21 +222,24 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {user && isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-b border-yc-border px-4 py-3 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-[4px] text-xs font-medium ${
-                  location.pathname === link.path
-                    ? 'bg-yc-bg-secondary text-yc-text font-bold'
-                    : 'text-yc-text-secondary hover:text-yc-text'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="md:hidden bg-white border-t border-yc-border px-4 py-3 space-y-1 animate-in slide-in-from-top-2 duration-150">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-[4px] text-xs font-medium transition-colors ${
+                    isActive
+                      ? 'bg-yc-bg-secondary text-yc-text font-bold border-l-2 border-yc-orange'
+                      : 'text-yc-text-secondary hover:text-yc-text hover:bg-yc-bg-subtle'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             <div className="pt-2">
               <Button
                 size="sm"
@@ -251,7 +250,7 @@ export const Navbar: React.FC = () => {
                   setIsUploadModalOpen(true);
                 }}
               >
-                + Upload Resume
+                + Upload Resume PDF
               </Button>
             </div>
           </div>
@@ -329,4 +328,3 @@ export const Navbar: React.FC = () => {
     </>
   );
 };
-
