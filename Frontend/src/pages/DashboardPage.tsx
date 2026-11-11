@@ -161,9 +161,9 @@ export const DashboardPage: React.FC = () => {
           <p className="text-xs text-yc-text-secondary font-medium">AI Job Matches</p>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-yc-text">{matches.length}</span>
-            {matches.length > 0 && <Badge variant="success">Active</Badge>}
+            
           </div>
-          <p className="text-[11px] text-yc-text-muted">Cosine similarity &gt; 0.35 cutoff</p>
+          
         </Card>
 
         {/* Metric 2: Top Compatibility */}
@@ -173,9 +173,9 @@ export const DashboardPage: React.FC = () => {
             <span className="text-2xl font-bold text-yc-orange">
               {topMatchScore > 0 ? `${topMatchScore}%` : '—'}
             </span>
-            {topMatchScore > 0 && <Badge variant="orange">High Fit</Badge>}
+           
           </div>
-          <p className="text-[11px] text-yc-text-muted">Hybrid vector + keyword boost</p>
+          
         </Card>
 
         {/* Metric 3: Candidate Pipeline */}
@@ -187,7 +187,7 @@ export const DashboardPage: React.FC = () => {
               <Badge variant="warning">{interviewCount} Interviewing</Badge>
             )}
           </div>
-          <p className="text-[11px] text-yc-text-muted">Direct ATS pipeline tracker</p>
+          
         </Card>
 
         {/* Metric 4: Resume Health */}
@@ -197,11 +197,9 @@ export const DashboardPage: React.FC = () => {
             <span className="text-2xl font-bold text-yc-text">
               {hasResume ? `${skillsCount} skills` : 'No file'}
             </span>
-            {hasResume && <Badge variant="success">GridFS</Badge>}
+            
           </div>
-          <p className="text-[11px] text-yc-text-muted">
-            {hasResume ? 'Gemini structured schema' : 'Upload to vectorize'}
-          </p>
+          
         </Card>
       </div>
 
@@ -303,9 +301,9 @@ export const DashboardPage: React.FC = () => {
 
                     <div className="flex items-center justify-between pt-2.5 border-t border-yc-border-subtle text-[11px] text-yc-text-secondary">
                       <div className="flex items-center gap-3">
-                        <span>Semantic Vector: {Math.round(item.embedScore * 100)}%</span>
+                        {/* <span>Semantic Vector: {Math.round(item.embedScore * 100)}%</span>
                         <span>•</span>
-                        <span>Keywords: {Math.round(item.keywordScore * 100)}%</span>
+                        <span>Keywords: {Math.round(item.keywordScore * 100)}%</span> */}
                       </div>
 
                       <div className="flex items-center gap-2">
@@ -352,7 +350,7 @@ export const DashboardPage: React.FC = () => {
             <CardHeader className="mb-0 pb-2">
               <CardTitle>Resume Intelligence</CardTitle>
               {hasResume ? (
-                <Badge variant="success">Active & Vectorized</Badge>
+                <Badge variant="success">Details</Badge>
               ) : (
                 <Badge variant="warning">Missing</Badge>
               )}
@@ -434,7 +432,7 @@ export const DashboardPage: React.FC = () => {
           </Card>
 
           {/* Panel 2: Recent Activity Timeline */}
-          <Card className="p-5 space-y-4">
+          {/* <Card className="p-5 space-y-4">
             <CardHeader className="mb-0 pb-2">
               <CardTitle>Recent Activity</CardTitle>
             </CardHeader>
@@ -468,7 +466,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
             </div>
-          </Card>
+          </Card> */}
 
           {/* Panel 3: Search Preferences Summary */}
           <Card className="p-5 space-y-4">

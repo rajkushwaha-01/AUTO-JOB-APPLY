@@ -1,4 +1,4 @@
-// src/services/matchService.js
+// src/services/match.service.js
 const crypto = require("crypto");
 const User = require("../modules/user.model");
 const Job = require("../modules/job.model");
@@ -23,16 +23,31 @@ const buildResumeMatchText = (resume) => {
   return `${resume.summary || ""}. Skills: ${skills}. ${expText}. ${projectText}`;
 };
 
-const keywordBoost = (resumeSkills, jobTitle, jobDescription) => {
-  if (!resumeSkills?.length) return 0;
-  const text = (jobTitle + " " + jobDescription).toLowerCase();
-  const matchCount = resumeSkills.filter((skill) =>
-    text.includes(skill.toLowerCase())
-  ).length;
-  return matchCount / resumeSkills.length;
+// Patterns that signal non-technical / non-engineering positions
+const NON_ENGINEERING_TITLE_PATTERNS = [
+  "account executive",
+  "business development",
+  "sales representative",
+  "recruiter",
+  "human resources",
+  "benefits analyst",
+  "talent acquisition",
+];
+
+const isLikelyRelevantTitle = (jobTitle) => {
+  const title = (jobTitle || "").toLowerCase();
+  return !NON_ENGINEERING_TITLE_PATTERNS.some((pattern) => title.includes(pattern));
 };
 
-const findMatchesForUser = async (userId, limit = 20) => {
+const keywordBoost = (resumeSkills, jobTitle, jobDescription) => {
+  if (!resumeSkills?.length) return 0;
+  const text = (jobTitle + " " + (jobDescription || "")).toLowerCase();
+  const matched = resumeSkills.filter((skill) => text.includes(skill.toLowerCase()));
+  const relevantSkillCount = Math.min(resumeSkills.length, 8);
+  return Math.min(matched.length / relevantSkillCount, 1);
+};
+
+const findMatchesForUser = async (userId, limit = 10) => {
   const user = await User.findById(userId);
   if (!user || !user.resume) {
     throw new Error("No resume found for this user");
@@ -57,14 +72,17 @@ const findMatchesForUser = async (userId, limit = 20) => {
     return [];
   }
 
-  const scored = openJobs
+  // Filter out irrelevant titles, but fallback to all jobs if pool is too small
+  const filteredJobs = openJobs.filter((job) => isLikelyRelevantTitle(job.title));
+  const candidatePool = filteredJobs.length >= limit ? filteredJobs : openJobs;
+
+  const scored = candidatePool
     .map((job) => {
       const embedScore = cosineSimilarity(resumeEmbedding, job.embedding);
-      const keywordScore = keywordBoost(user.resume.skills, job.title, job.description);
-      const finalScore = embedScore * 0.6 + keywordScore * 0.4;
-      return { job, embedScore, keywordScore, finalScore };
+      const kwScore = keywordBoost(user.resume.skills, job.title, job.description);
+      const finalScore = embedScore * 0.5 + kwScore * 0.5;
+      return { job, embedScore, keywordScore: kwScore, finalScore };
     })
-    .filter((item) => item.finalScore > 0.3)
     .sort((a, b) => b.finalScore - a.finalScore)
     .slice(0, limit);
 

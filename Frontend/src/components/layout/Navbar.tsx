@@ -36,7 +36,7 @@ export const Navbar: React.FC = () => {
     { label: 'Find Jobs', path: '/jobs' },
     { label: 'Applications', path: '/applications' },
     { label: 'Resume / Profile', path: '/profile' },
-    { label: 'Automation', path: '/automation' },
+    // { label: 'Automation', path: '/automation' },
   ];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
