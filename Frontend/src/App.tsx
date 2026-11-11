@@ -6,6 +6,7 @@ import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { JobDiscoveryPage } from './pages/JobDiscoveryPage';
+import { MatchedJobsPage } from './pages/MatchedJobsPage';
 import { ApplicationsPage } from './pages/ApplicationsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { AutomationPage } from './pages/AutomationPage';
@@ -26,6 +27,7 @@ export const App: React.FC = () => {
           <Route element={<AppLayout requireAuth={true} />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/jobs" element={<JobDiscoveryPage />} />
+            <Route path="/matched-jobs" element={<MatchedJobsPage />} />
             <Route path="/applications" element={<ApplicationsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/automation" element={<AutomationPage />} />

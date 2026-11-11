@@ -340,9 +340,7 @@ export const ApplicationsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-yc-border">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-yc-text">Applications Management</h1>
-          <p className="text-xs text-yc-text-secondary mt-1">
-            Track, update, and manage your pipeline across Greenhouse, Lever, Workday, and ATS platforms.
-          </p>
+          
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -372,7 +370,6 @@ export const ApplicationsPage: React.FC = () => {
             <Briefcase className="w-4 h-4 text-yc-text-muted" />
           </div>
           <div className="text-2xl font-bold text-yc-text mt-1">{applications.length}</div>
-          <div className="text-[11px] text-yc-text-muted mt-1">Direct from matching engine</div>
         </Card>
 
         <Card className="p-4 bg-white border border-yc-border">
@@ -383,7 +380,6 @@ export const ApplicationsPage: React.FC = () => {
           <div className="text-2xl font-bold text-yc-text mt-1">
             {applications.filter((a) => a.status === 'Applied' || a.status === 'Pending').length}
           </div>
-          <div className="text-[11px] text-yc-text-muted mt-1">Awaiting recruiter reviews</div>
         </Card>
 
         <Card className="p-4 bg-white border border-yc-border">
@@ -394,7 +390,6 @@ export const ApplicationsPage: React.FC = () => {
           <div className="text-2xl font-bold text-yc-text mt-1">
             {applications.filter((a) => a.status === 'Interview').length}
           </div>
-          <div className="text-[11px] text-yc-text-muted mt-1">Active conversation stages</div>
         </Card>
 
         <Card className="p-4 bg-white border border-yc-border">
@@ -405,7 +400,6 @@ export const ApplicationsPage: React.FC = () => {
           <div className="text-2xl font-bold text-yc-text mt-1">
             {applications.filter((a) => a.status === 'Accepted').length}
           </div>
-          <div className="text-[11px] text-yc-text-muted mt-1">Successful outcomes</div>
         </Card>
       </div>
 

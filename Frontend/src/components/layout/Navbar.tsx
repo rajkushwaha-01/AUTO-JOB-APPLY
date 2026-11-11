@@ -34,9 +34,10 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'Find Jobs', path: '/jobs' },
+    { label: 'Matched Jobs', path: '/matched-jobs' },
     { label: 'Applications', path: '/applications' },
     { label: 'Resume / Profile', path: '/profile' },
-    // { label: 'Automation', path: '/automation' },
+    { label: 'Automation', path: '/automation' },
   ];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

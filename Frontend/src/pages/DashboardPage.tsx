@@ -11,6 +11,7 @@ import { Skeleton } from '../components/common/LoadingSkeleton';
 import { EmptyState } from '../components/common/EmptyState';
 import {
   Sparkles,
+  CirclePercent,
   ExternalLink,
   Upload,
   FileText,
@@ -214,10 +215,10 @@ export const DashboardPage: React.FC = () => {
             </div>
             {matches.length > 0 && (
               <Link
-                to="/jobs"
-                className="text-xs text-yc-orange hover:underline font-medium inline-flex items-center gap-1"
+                to="/matched-jobs"
+                className="text-xs  hover:underline font-medium inline-flex items-center gap-1"
               >
-                View all <ArrowRight className="w-3 h-3" />
+                View all matches <ArrowRight className="w-3 h-3" />
               </Link>
             )}
           </div>
@@ -293,7 +294,7 @@ export const DashboardPage: React.FC = () => {
 
                       <div className="flex items-center gap-1.5 shrink-0">
                         <Badge variant="success">
-                          <Sparkles className="w-3 h-3 mr-0.5" />
+                          <CirclePercent className="w-3 h-3 mr-0.5" />
                           {scorePercent}% Match
                         </Badge>
                       </div>

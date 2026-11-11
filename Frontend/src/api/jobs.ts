@@ -1,9 +1,22 @@
 import { apiClient } from './client';
-import type { MatchResponse } from './types';
+import type { MatchResponse, AllJobsResponse, JobItem } from './types';
 
 export const jobsApi = {
-  getMatches: async (): Promise<MatchResponse> => {
-    const { data } = await apiClient.get<MatchResponse>('/api/match/me');
+  getAllJobs: async (params?: {
+    search?: string;
+    company?: string;
+    location?: string;
+    limit?: number;
+    page?: number;
+  }): Promise<AllJobsResponse> => {
+    const { data } = await apiClient.get<AllJobsResponse>('/api/jobs', { params });
+    return data;
+  },
+
+  getMatches: async (limit = 10): Promise<MatchResponse> => {
+    const { data } = await apiClient.get<MatchResponse>('/api/match/me', {
+      params: { limit },
+    });
     return data;
   },
 
@@ -12,4 +25,3 @@ export const jobsApi = {
     return data;
   },
 };
-

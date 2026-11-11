@@ -111,6 +111,25 @@ export interface AuthResponse {
   user: User;
 }
 
+export interface JobItem {
+  jobId: string;
+  title: string;
+  company?: string;
+  location?: string;
+  applyUrl?: string;
+  description?: string;
+  source?: string;
+  fetchedAt?: string;
+  createdAt?: string;
+}
+
+export interface AllJobsResponse {
+  total: number;
+  count: number;
+  page: number;
+  jobs: JobItem[];
+}
+
 export interface JobMatchItem {
   jobId: string;
   title: string;

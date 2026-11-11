@@ -25,6 +25,7 @@ const fileRoutes = require("./routes/fileRoutes");
 const ingestRoutes = require("./routes/ingestRoutes");
 const matchRoutes = require("./routes/matchRoutes");
 const autofillRoutes = require("./routes/autofill.routes");
+const jobRoutes = require("./routes/jobRoutes");
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");
@@ -35,5 +36,6 @@ app.use("/api", fileRoutes);
 app.use("/api/ingest", ingestRoutes);
 app.use("/api/match", matchRoutes);
 app.use("/api/autofill", autofillRoutes);
+app.use("/api/jobs", jobRoutes);
 
 module.exports = app;

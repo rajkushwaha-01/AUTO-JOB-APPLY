@@ -174,15 +174,15 @@ export const ProfilePage: React.FC = () => {
             <h1 className="text-2xl font-bold tracking-tight text-yc-text">
               {resume?.fullName || user?.name || 'Candidate Profile'}
             </h1>
-            {hasResume && (
+            {/* {hasResume && (
               <Badge variant="success" size="sm" className="hidden sm:inline-flex">
                 <FileCheck className="w-3 h-3" /> Resume Active
               </Badge>
-            )}
+            )} */}
           </div>
-          <p className="text-xs text-yc-text-secondary mt-1">
+          {/* <p className="text-xs text-yc-text-secondary mt-1">
             Manage your verified credentials, extracted resume details, and AI matching vector profile.
-          </p>
+          </p> */}
         </div>
 
         <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export const ProfilePage: React.FC = () => {
                 <div className="flex items-center justify-between text-yc-text-secondary">
                   <span>Indexed Skills:</span>
                   <span className="font-medium text-yc-text">
-                    {(resume?.skills || []).length} keywords
+                    {(resume?.skills || []).length} 
                   </span>
                 </div>
               </div>
