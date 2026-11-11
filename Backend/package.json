@@ -28,6 +28,7 @@
     "morgan": "^1.12.1",
     "multer": "^2.5.0",
     "nodemon": "^3.1.14",
-    "pdfjs-dist": "^6.5.438"
+    "pdfjs-dist": "^6.5.438",
+    "puppeteer": "^25.17.0"
   }
 }

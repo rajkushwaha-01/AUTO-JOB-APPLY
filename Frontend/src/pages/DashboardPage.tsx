@@ -126,9 +126,7 @@ export const DashboardPage: React.FC = () => {
           <h1 className="text-2xl font-bold tracking-tight text-yc-text">
             Welcome back, {user?.name}
           </h1>
-          <p className="text-xs text-yc-text-secondary mt-1">
-            Real-time candidate dashboard with vector-matched tech roles and pipeline tracking.
-          </p>
+          
         </div>
 
         <div className="flex items-center gap-2">
