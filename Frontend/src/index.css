@@ -25,3 +25,63 @@
   }
 }
 
+/* Formatted job description styles for ATS parsed HTML */
+.job-description-content {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #262626;
+}
+
+.job-description-content h1,
+.job-description-content h2,
+.job-description-content h3,
+.job-description-content h4 {
+  font-weight: 700;
+  color: #171717;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.job-description-content h1 { font-size: 1.1rem; }
+.job-description-content h2 { font-size: 1rem; }
+.job-description-content h3 { font-size: 0.925rem; }
+.job-description-content h4 { font-size: 0.85rem; }
+
+.job-description-content p {
+  margin-bottom: 0.65rem;
+  line-height: 1.6;
+  color: #383838;
+}
+
+.job-description-content ul {
+  margin-top: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+}
+
+.job-description-content ol {
+  margin-top: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.25rem;
+  list-style-type: decimal;
+}
+
+.job-description-content li {
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+  color: #383838;
+}
+
+.job-description-content strong,
+.job-description-content b {
+  font-weight: 600;
+  color: #171717;
+}
+
+.job-description-content a {
+  color: #F26522;
+  text-decoration: underline;
+}
+

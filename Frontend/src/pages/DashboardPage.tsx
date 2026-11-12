@@ -293,7 +293,7 @@ export const DashboardPage: React.FC = () => {
                       </div>
 
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <Badge variant="success">
+                        <Badge >
                           <CirclePercent className="w-3 h-3 mr-0.5" />
                           {scorePercent}% Match
                         </Badge>

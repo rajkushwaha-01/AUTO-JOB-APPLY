@@ -23,6 +23,7 @@ import {
   PlusCircle,
   Zap,
   Layers,
+  CircleDotDashed,
 } from 'lucide-react';
 
 const ROLE_OPTIONS = [
@@ -49,6 +50,32 @@ const GENUINE_LOCATIONS = [
   { value: 'canada', label: 'Canada' },
   { value: 'apac', label: 'Asia-Pacific (Singapore / Japan / Australia)' },
 ];
+
+const decodeJobHtml = (rawHtml?: string) => {
+  if (!rawHtml) return '';
+  let str = rawHtml;
+  for (let i = 0; i < 2; i++) {
+    if (
+      str.includes('&lt;') ||
+      str.includes('&gt;') ||
+      str.includes('&amp;') ||
+      str.includes('&quot;') ||
+      str.includes('&#39;') ||
+      str.includes('&nbsp;')
+    ) {
+      str = str
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&');
+    } else {
+      break;
+    }
+  }
+  return str;
+};
 
 export const MatchedJobsPage: React.FC = () => {
   const { user } = useAuth();
@@ -310,7 +337,7 @@ export const MatchedJobsPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-yc-text">AI-Matched Jobs</h1>
-            <Badge variant="orange" size="sm">
+            <Badge  size="sm">
               <Sparkles className="w-3 h-3 mr-1" />
               10 Most Matched
             </Badge>
@@ -520,7 +547,7 @@ export const MatchedJobsPage: React.FC = () => {
 
                     <div className="flex items-center gap-1.5 shrink-0">
                       <Badge variant={scorePercent >= 35 ? 'success' : 'default'}>
-                        <Sparkles className="w-3 h-3 mr-0.5 text-yc-orange" />
+                        <CircleDotDashed className="w-3 h-3 mr-0.5 text-yc-orange" />
                         {scorePercent}% Match
                       </Badge>
                     </div>
@@ -558,7 +585,9 @@ export const MatchedJobsPage: React.FC = () => {
                     <span className="text-xs font-semibold text-yc-text capitalize">
                       {selectedJob.company || 'Tech Company'}
                     </span>
-                    <Badge variant="outline">Verified ATS Feed</Badge>
+                    <Badge variant="outline">
+                      {selectedJob.source ? selectedJob.source.toUpperCase() : 'VERIFIED ATS'}
+                    </Badge>
                   </div>
                   <h2 className="text-xl font-bold text-yc-text pt-1">{selectedJob.title}</h2>
                   <div className="flex flex-wrap items-center gap-3 text-xs text-yc-text-secondary pt-0.5">
@@ -607,17 +636,7 @@ export const MatchedJobsPage: React.FC = () => {
 
               {/* AI Match Breakdown Card */}
               <div className="bg-yc-bg-secondary p-4 rounded-[4px] border border-yc-border space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-yc-orange" />
-                    <span className="text-xs font-semibold text-yc-text">
-                      AI Compatibility Assessment
-                    </span>
-                  </div>
-                  <Badge variant="success" size="md">
-                    {Math.round(selectedJob.score * 100)}% Overall Score
-                  </Badge>
-                </div>
+                
 
                 <div className="grid grid-cols-2 gap-3 text-xs pt-1">
                   <div className="bg-white p-3 rounded-[4px] border border-yc-border">
@@ -646,6 +665,36 @@ export const MatchedJobsPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Job Metadata Pill */}
+              <div className="bg-yc-bg-secondary p-3.5 rounded-[4px] border border-yc-border flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div>
+                  <span className="text-yc-text-secondary">Source Platform:</span>{' '}
+                  <span className="font-semibold text-yc-text uppercase">
+                    {selectedJob.source || 'Greenhouse'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-yc-text-secondary">Employment Type:</span>{' '}
+                  <span className="font-medium text-yc-text">Full-time</span>
+                </div>
+                <div>
+                  <span className="text-yc-text-secondary">Location:</span>{' '}
+                  <span className="font-medium text-yc-text">{selectedJob.location || 'Flexible'}</span>
+                </div>
+                {selectedJob.createdAt && (
+                  <div>
+                    <span className="text-yc-text-secondary">Indexed:</span>{' '}
+                    <span className="font-medium text-yc-text">
+                      {new Date(selectedJob.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                )}
+              </div>
+
               {/* Job Description */}
               <div className="space-y-3">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-yc-text-secondary">
@@ -653,14 +702,9 @@ export const MatchedJobsPage: React.FC = () => {
                 </h3>
                 {selectedJob.description ? (
                   <div
-                    className="text-xs leading-relaxed text-yc-text space-y-2 max-h-[350px] overflow-y-auto pr-2"
+                    className="job-description-content max-h-[480px] overflow-y-auto pr-2 bg-yc-bg-subtle/30 p-3 rounded-[4px] border border-yc-border-subtle"
                     dangerouslySetInnerHTML={{
-                      __html: selectedJob.description
-                        .replace(/&lt;/g, '<')
-                        .replace(/&gt;/g, '>')
-                        .replace(/&quot;/g, '"')
-                        .replace(/&#39;/g, "'")
-                        .replace(/&amp;/g, '&'),
+                      __html: decodeJobHtml(selectedJob.description),
                     }}
                   />
                 ) : (

@@ -50,6 +50,32 @@ const GENUINE_LOCATIONS = [
   { value: 'apac', label: 'Asia-Pacific (Singapore / Japan / Australia)' },
 ];
 
+const decodeJobHtml = (rawHtml?: string) => {
+  if (!rawHtml) return '';
+  let str = rawHtml;
+  // Multiple decode passes in case content is doubly entity-encoded by ATS
+  for (let i = 0; i < 2; i++) {
+    if (
+      str.includes('&lt;') ||
+      str.includes('&gt;') ||
+      str.includes('&quot;') ||
+      str.includes('&#39;') ||
+      str.includes('&amp;') ||
+      str.includes('&nbsp;')
+    ) {
+      str = str
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&apos;/g, "'")
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&');
+    }
+  }
+  return str;
+};
+
 export const JobDiscoveryPage: React.FC = () => {
   const { user } = useAuth();
   const [jobs, setJobs] = useState<JobItem[]>([]);
@@ -307,26 +333,7 @@ export const JobDiscoveryPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Matched Jobs Callout Banner */}
-      <div className="p-4 rounded-[4px] bg-yc-bg-secondary border border-yc-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-[4px] bg-white border border-yc-border flex items-center justify-center shrink-0">
-            <Sparkles className="w-4 h-4 text-yc-orange" />
-          </div>
-          <div>
-            <h4 className="text-xs font-semibold text-yc-text">
-              Looking for personalized AI job matches?
-            </h4>
-            <p className="text-[11px] text-yc-text-secondary">
-              See the 10 most compatible tech positions scored against your resume vector.
-            </p>
-          </div>
-        </div>
-        <Link to="/matched-jobs">
-          <Button size="sm" variant="primary" icon={<ArrowRight className="w-3.5 h-3.5" />}>
-            View AI-Matched Jobs
-          </Button>
-        </Link>
-      </div>
+      
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-yc-border">
@@ -615,6 +622,18 @@ export const JobDiscoveryPage: React.FC = () => {
                   <span className="text-yc-text-secondary">Location:</span>{' '}
                   <span className="font-medium text-yc-text">{selectedJob.location || 'Flexible'}</span>
                 </div>
+                {selectedJob.createdAt && (
+                  <div>
+                    <span className="text-yc-text-secondary">Indexed:</span>{' '}
+                    <span className="font-medium text-yc-text">
+                      {new Date(selectedJob.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Job Description */}
@@ -624,14 +643,9 @@ export const JobDiscoveryPage: React.FC = () => {
                 </h3>
                 {selectedJob.description ? (
                   <div
-                    className="text-xs leading-relaxed text-yc-text space-y-2 max-h-[420px] overflow-y-auto pr-2"
+                    className="job-description-content max-h-[480px] overflow-y-auto pr-2 bg-yc-bg-subtle/30 p-3 rounded-[4px] border border-yc-border-subtle"
                     dangerouslySetInnerHTML={{
-                      __html: selectedJob.description
-                        .replace(/&lt;/g, '<')
-                        .replace(/&gt;/g, '>')
-                        .replace(/&quot;/g, '"')
-                        .replace(/&#39;/g, "'")
-                        .replace(/&amp;/g, '&'),
+                      __html: decodeJobHtml(selectedJob.description),
                     }}
                   />
                 ) : (

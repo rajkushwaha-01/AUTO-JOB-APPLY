@@ -141,6 +141,8 @@ export interface JobMatchItem {
   keywordScore: number;
   description?: string;
   source?: string;
+  fetchedAt?: string;
+  createdAt?: string;
 }
 
 export interface MatchResponse {
