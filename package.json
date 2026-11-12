@@ -1,5 +1,16 @@
 {
-  "dependencies": {
-    "multer": "^2.5.0"
+  "name": "auto-job-apply",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Auto Job Apply Platform - Single-Domain Fullstack on Render",
+  "main": "Backend/server.js",
+  "scripts": {
+    "build": "npm --prefix Backend install && npm --prefix Frontend install && npm --prefix Frontend run build",
+    "start": "node Backend/server.js",
+    "dev:backend": "npm --prefix Backend run dev",
+    "dev:frontend": "npm --prefix Frontend run dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
