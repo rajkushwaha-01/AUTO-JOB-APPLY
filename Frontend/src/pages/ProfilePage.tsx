@@ -162,7 +162,7 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const skillsByCategory = resume?.skillsByCategory || {};
+  const skillsByCategory: Record<string, string[]> = (resume?.skillsByCategory as Record<string, string[]>) || {};
   const hasCategorizedSkills = Object.keys(skillsByCategory).length > 0;
 
   return (
@@ -424,7 +424,7 @@ export const ProfilePage: React.FC = () => {
 
               {hasCategorizedSkills ? (
                 <div className="space-y-3.5">
-                  {Object.entries(skillsByCategory).map(([category, skills]) => {
+                  {Object.entries(skillsByCategory).map(([category, skills]: [string, string[]]) => {
                     if (!skills || skills.length === 0) return null;
                     return (
                       <div key={category} className="space-y-1.5">
