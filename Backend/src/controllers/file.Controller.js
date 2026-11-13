@@ -1,3 +1,16 @@
+// Polyfill Promise.withResolvers for Node.js versions < 22 (required by pdfjs-dist)
+if (!Promise.withResolvers) {
+  Promise.withResolvers = function withResolvers() {
+    let resolve;
+    let reject;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
 const multer = require('multer');
 const path = require('path');
 const mongoose = require('mongoose');

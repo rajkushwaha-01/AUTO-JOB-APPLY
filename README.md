@@ -1,6 +1,6 @@
-# Auto Job Apply Platform (YC Edition)
+# Auto Job Apply Platform 
 
-> An AI-powered job discovery, semantic resume matching, and automated job application engine built with a minimalist, high-density Y Combinator design system.
+> An AI-powered job discovery, semantic resume matching, and automated job application engine built with a minimalist, high-density design system.
 
 [![Node.js](https://img.shields.io/badge/Node.js-20.x_LTS-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-18.3-blue.svg)](https://reactjs.org/)
