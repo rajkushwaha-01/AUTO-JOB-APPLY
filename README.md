@@ -53,7 +53,7 @@
 | **Storage** | MongoDB Atlas · GridFS for raw resume binaries |
 | **Auth** | JWT (7-day expiry) · bcrypt (salt 10) · HttpOnly cookies + JSON body dual-delivery |
 | **Application Tracking** | Kanban board — 6 statuses: Applied, Pending, Interview, Accepted, Rejected, Archived |
-| **Design System** | YC color palette — Orange `#F26522`, Background `#F7F7F5`, Text `#171717` |
+| **Design System** | Orange `#F26522`, Background `#F7F7F5`, Text `#171717` |
 | **Chrome Extension** | [Auto-Apply Companion](https://github.com/rajkushwaha-01/Auto-Job-Apply-chrome-extension) |
 
 ---
